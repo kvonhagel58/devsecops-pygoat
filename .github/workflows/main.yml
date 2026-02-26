@@ -40,7 +40,7 @@ jobs:
     - name: Setup Docker
       uses: docker-practice/actions-setup-docker@v1
       with:
-        docker_version: '20.10.7'
+        docker_version: '27.1.2'
 
     - name: Build Docker Image
       run: docker build -f Dockerfile -t myapp:latest .
@@ -49,6 +49,7 @@ jobs:
       run: |
         curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
         sh install-scout.sh
+        echo ${{ secrets.DOCKER_REPO_PASSWORD }} | docker login -u ${{ secrets.DOCKER_REPO_USER }} --password-stdin
         docker scout quickview
         docker scout cves
         
