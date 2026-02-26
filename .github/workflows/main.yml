@@ -1,4 +1,4 @@
-name:
+name: CI
 
 on: [push]
 
@@ -45,11 +45,19 @@ jobs:
     - name: Build Docker Image
       run: docker build -f Dockerfile -t myapp:latest .
 
+    # - name: Docker Scout Scan
+      # run: |
+        # curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+        # sh install-scout.sh
+        # echo ${{ secrets.DOCKER_REPO_PASSWORD }} | docker login -u ${{ secrets.DOCKER_REPO_USER }} --password-stdin
+        # docker scout quickview
+        # docker scout cves
+
     - name: Docker Scout Scan
-      run: |
-        curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
-        sh install-scout.sh
-        echo ${{ secrets.DOCKER_REPO_PASSWORD }} | docker login -u ${{ secrets.DOCKER_REPO_USER }} --password-stdin
-        docker scout quickview
-        docker scout cves
+      uses: docker/scout-action@v1.0.9
+      with:
+        dockerhub-user: ${{ secrets.DOCKER_REPO_USER }}
+        dockerhub-password: ${{ secrets.DOCKER_REPO_PASSWORD }}
+        command: quickview,cves
+
         
